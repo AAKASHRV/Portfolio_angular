@@ -10,9 +10,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
         rel="stylesheet">
+    <link rel="preload" href="css/style.css" as="style">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        media="print" onload="this.media='all'">
 </head>
 
 <body ng-app="portfolioApp" ng-controller="MainController">
@@ -154,21 +157,24 @@
                 <div class="section-line"></div>
             </div>
             <div class="projects-grid">
-                <div class="project-card glass-card fade-in-up" ng-repeat="project in projects">
+                <div class="project-card glass-card fade-in-up" ng-repeat="project in projects"
+                    data-project="{{project.title}}">
                     <div class="project-content">
                         <div class="project-top">
                             <div class="folder-icon">
                                 <i class="far fa-folder"></i>
                             </div>
                             <div class="project-links">
-                                <!-- <a href="#" title="GitHub"><i class="fab fa-github"></i></a> -->
-                                <a href="{{project.link}}"target="_blank" rel="noopener noreferrer"  title="Live Demo"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="{{project.link}}" target="_blank" rel="noopener noreferrer" title="Live Demo"
+                                    aria-label="View {{project.title}} live demo">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
                             </div>
                         </div>
                         <h3 class="project-title">{{project.title}}</h3>
                         <p class="project-desc">{{project.description}}</p>
                         <div class="project-tech">
-                            <span ng-repeat="tag in project.tags">{{tag}}</span>
+                            <span ng-repeat="tag in project.tags" class="tech-tag">{{tag}}</span>
                         </div>
                     </div>
                 </div>
@@ -208,31 +214,47 @@
                     <a href="tel:{{developer.phone}}" class="btn btn-outline big-btn">
                         <i class="fas fa-phone"></i> Call Me
                     </a>
-                    <a href="https://www.linkedin.com/in/{{developer.linkedin}}" 
-                    target="_blank" rel="noopener noreferrer" 
-                    class="btn btn-outline big-btn">
-                     <i class="fab fa-linkedin"></i> LinkedIn
-                 </a>
+                    <a href="https://www.linkedin.com/in/{{developer.linkedin}}" target="_blank"
+                        rel="noopener noreferrer" class="btn btn-outline big-btn">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
                 </div>
             </div>
         </div>
 
     </section>
 
-    <script src="js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Optimized intersection observer with better performance
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
+                        // Stop observing once element is visible for performance
+                        observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.1 });
+            }, observerOptions);
 
-            setTimeout(() => {
-                document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
-            }, 100);
+            // Observe elements with a small delay to ensure DOM is ready
+            const observeElements = () => {
+                document.querySelectorAll('.fade-in-up').forEach(el => {
+                    if (el.offsetParent !== null) { // Only observe visible elements
+                        observer.observe(el);
+                    }
+                });
+            };
+
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                setTimeout(observeElements, 100);
+            });
         });
     </script>
 </body>
