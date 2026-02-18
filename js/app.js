@@ -37,7 +37,7 @@ app.controller('MainController', function ($scope, $window) {
             icon: "fas fa-server",
             items: ["Node.js", "Express.js", "REST APIs", "Microservices"]
         },
-        
+
         {
             category: "Databases",
             icon: "fas fa-database",
@@ -120,8 +120,14 @@ app.controller('MainController', function ($scope, $window) {
         {
             title: "Kairaa Exchange",
             description: "A centralized cryptocurrency exchange (CEX) featuring a high-performance matching engine, spot trading, and integration with Binance liquidity APIs.",
-            tags: ["Node.js", "MongoDB", "AngularJs", "Sockets"],
+            tags: ["Node.js", "MongoDB", "AngularJs", "Socket.io"],
             link: "https://www.kairaaexchange.com/"
+        },
+        {
+            title: "Kchain Explorer",
+            description: "A Public blockchain explorer for Kairaa blockchain ",
+            tags: ["Node.js", "MongoDB", "AngularJs", "Web Sockets"],
+            link: "https://kairaascan.io/"
         }
     ];
 
@@ -136,7 +142,7 @@ app.controller('MainController', function ($scope, $window) {
     $scope.scrollTo = function (sectionId) {
         var element = document.getElementById(sectionId);
         if (element) {
-            var headerOffset = 80;
+            var headerOffset = 70;
             var elementPosition = element.getBoundingClientRect().top;
             var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -144,7 +150,12 @@ app.controller('MainController', function ($scope, $window) {
                 top: offsetPosition,
                 behavior: "smooth"
             });
+
+            // Close mobile menu if open
             $scope.isMenuOpen = false;
+
+            // Update active section for navigation highlighting
+            $scope.activeSection = sectionId;
         }
     };
 });
